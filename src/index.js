@@ -1,6 +1,11 @@
 const express = require("express");
 const routes = require("./routes/index_router");
+const passport = require("passport");
+var cors = require("cors");
+
+// config files
 require("dotenv").config();
+require("./config/passport_config");
 
 //Set up mongoose connection
 const mongoose = require("mongoose");
@@ -11,13 +16,21 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 const app = express();
 
+// Passport init
+app.use(passport.initialize());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 // routes
 app.use("/api", routes.mainRouter);
 app.use("/api/users", routes.usersRouter);
-app.use("/api/posts", routes.postsRouter);
+app.use(
+  "/api/posts",
+  passport.authenticate("jwt", { session: false }),
+  routes.postsRouter
+);
 app.use("/api/comments", routes.commentsRouter);
 
 app.listen(3000, () => {

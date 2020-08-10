@@ -1,17 +1,17 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const PostSchema = new Schema({
+const postSchema = new Schema({
   title: { type: String, required: true },
   content: { type: String, required: true },
   author: { type: Schema.Types.ObjectId, ref: "User" },
   date: { type: Date, default: Date.now() },
   published: { type: Boolean, default: false },
-  comments: [{ type: Schema.Types.ObjectId, ref: "Category" }],
+  comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
 });
 
-PostSchema.virtual("url").get(function () {
+postSchema.virtual("url").get(function () {
   return "api/posts/" + this._id;
 });
 
-module.exports = mongoose.model("Post", PostSchema);
+module.exports = mongoose.model("Post", postSchema);
