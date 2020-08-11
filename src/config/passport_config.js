@@ -36,11 +36,18 @@ module.exports = passport.use(
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: process.env.JWT_SECRET,
     },
-    (jwt_payload, done) => {
-      if (jwt_payload.user.username === "admin") {
-        return done(null, true);
-      }
-      return done(null, false);
+    (payload, done) => {
+      User.findById(payload.user._id, (err, user) => {
+        if (err) {
+          return done(err, false);
+        }
+
+        if (user) {
+          done(null, user);
+        } else {
+          done(null, false);
+        }
+      });
     }
   )
 );
