@@ -1,5 +1,6 @@
 const { body, validationResult } = require("express-validator");
 const Post = require("../models/post");
+const User = require("../models/user");
 
 // Create
 exports.createGet = (req, res, next) => {
@@ -29,8 +30,23 @@ exports.createPost = [
           error: err,
         });
       }
-      return res.status(200).json({
-        post: post,
+      User.findById(req.user._id).exec((err, user) => {
+        if (err) {
+          return res.status(400).json({
+            error: err,
+          });
+        }
+        user.posts.push(post);
+        User.findByIdAndUpdate(req.user._id, user, {}, (err) => {
+          if (err) {
+            return res.status(400).json({
+              error: err,
+            });
+          }
+          return res.status(200).json({
+            post: post,
+          });
+        });
       });
     });
   },
@@ -113,21 +129,25 @@ exports.deletePost = (req, res, next) => {
 
 // Read
 exports.indexGet = (req, res) => {
-  Post.find({}).exec((err, posts) => {
-    if (err) {
-      return res.status(400).json({
-        error: err,
+  Post.find({})
+    .populate("author")
+    .populate("comments")
+    .exec((err, posts) => {
+      if (err) {
+        return res.status(400).json({
+          error: err,
+        });
+      }
+      return res.status(200).json({
+        posts: posts,
       });
-    }
-    return res.status(200).json({
-      posts: posts,
     });
-  });
 };
 
 exports.postViewGet = (req, res) => {
-  Post.find({ _id: req.params.id })
+  Post.findById(req.params.id)
     .populate("author")
+    .populate("comments")
     .exec((err, post) => {
       if (err) {
         return res.status(400).json({

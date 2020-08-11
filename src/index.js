@@ -24,14 +24,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // routes
-app.use("/api", routes.mainRouter);
 app.use("/api/users", routes.usersRouter);
 app.use(
   "/api/posts",
   passport.authenticate("jwt", { session: false }),
   routes.postsRouter
 );
-app.use("/api/comments", routes.commentsRouter);
 
 app.listen(3000, () => {
   console.log("Now listening on port 3000");
