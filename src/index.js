@@ -25,12 +25,8 @@ app.use(cors());
 
 // routes
 app.use("/api/users", routes.usersRouter);
-app.use(
-  "/api/posts",
-  passport.authenticate("jwt", { session: false }),
-  routes.postsRouter
-);
+app.use("/api/posts", routes.postsRouter);
 
-app.listen(3000, () => {
-  console.log("Now listening on port 3000");
+app.listen(5000, () => {
+  console.log("Now listening on port 5000");
 });
