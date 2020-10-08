@@ -24,8 +24,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // routes
-app.use("/api/users", routes.usersRouter);
-app.use("/api/posts", routes.postsRouter);
+app.use("/users", routes.usersRouter);
+app.use("/posts", routes.postsRouter);
 
 app.listen(5000, () => {
   console.log("Now listening on port 5000");
