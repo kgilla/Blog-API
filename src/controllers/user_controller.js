@@ -34,20 +34,18 @@ exports.loginGet = (req, res, next) => {
 };
 
 exports.loginPost = (req, res) => {
-  passport.authenticate("local", { session: false }, (err, user) => {
+  passport.authenticate("local", { session: false }, (err, user, info) => {
     if (err || !user) {
       return res.status(400).json({
-        message: "Something is not right",
-        user: user,
+        message: info.message,
       });
     }
     req.login(user, { session: false }, (err) => {
       if (err) {
         res.send(err);
-        console.log("error here");
       }
       const token = jwt.sign({ user }, process.env.JWT_SECRET);
-      return res.json({ user, token });
+      return res.status(200).json({ user, token });
     });
   })(req, res);
 };

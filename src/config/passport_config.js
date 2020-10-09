@@ -13,11 +13,10 @@ module.exports = passport.use(
         return done(err);
       }
       if (!user) {
-        return done(null, false);
+        return done(null, false, { message: "Username does not exist" });
       }
       bcrypt.compare(password, user.password, (err, res) => {
         if (res) {
-          console.log("success");
           return done(null, user, {
             message: `Welcome back ${user.name}!`,
           });
