@@ -50,20 +50,6 @@ exports.createPost = [
   },
 ];
 
-// Update
-exports.updateGet = (req, res, next) => {
-  Post.find({ _id: req.params.id }).exec((err, post) => {
-    if (err) {
-      return res.status(400).json({
-        error: err,
-      });
-    }
-    return res.status(200).json({
-      post,
-    });
-  });
-};
-
 exports.updatePost = [
   body("title").isLength({ min: 1, max: 160 }),
   body("content").isLength({ min: 1 }),
@@ -102,20 +88,6 @@ exports.updatePost = [
   },
 ];
 
-// Delete
-exports.deleteGet = (req, res) => {
-  Post.find({ _id: req.params.id }).exec((err, post) => {
-    if (err) {
-      return res.status(400).json({
-        error: err,
-      });
-    }
-    return res.status(200).json({
-      post: post,
-    });
-  });
-};
-
 exports.deletePost = (req, res, next) => {
   Post.findByIdAndDelete(req.params.id, {}, (err, post) => {
     if (err) {
@@ -123,6 +95,21 @@ exports.deletePost = (req, res, next) => {
         error: err,
       });
     }
+    User.findById(post.author).exec((err, user) => {
+      if (err) {
+        return res.status(400).json({
+          error: err,
+        });
+      }
+      user.posts.pull(req.params.id);
+      User.findByIdAndUpdate(post.author, user, {}, (err) => {
+        if (err) {
+          return res.status(400).json({
+            error: err,
+          });
+        }
+      });
+    });
     return res.status(200).json({
       post,
       message: "Post successfully deleted",

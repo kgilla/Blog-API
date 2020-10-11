@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const postController = require("../controllers/post_controller");
-const commentController = require("../controllers/comment_controller");
 const passport = require("passport");
 
 router.post(
@@ -10,22 +9,12 @@ router.post(
   postController.createPost
 );
 
-router.get(
-  "/:id/update",
-  passport.authenticate("jwt", { session: false }),
-  postController.updateGet
-);
 router.post(
   "/:id/update",
   passport.authenticate("jwt", { session: false }),
   postController.updatePost
 );
 
-router.get(
-  "/:id/delete",
-  passport.authenticate("jwt", { session: false }),
-  postController.deleteGet
-);
 router.post(
   "/:id/delete",
   passport.authenticate("jwt", { session: false }),
@@ -34,9 +23,5 @@ router.post(
 
 router.get("/", postController.indexGet);
 router.get("/:id", postController.postViewGet);
-
-// comment routes
-router.post("/:id/comments/create", commentController.createPost);
-router.post("/:id/commments/:id/delete", commentController.deletePost);
 
 module.exports = router;

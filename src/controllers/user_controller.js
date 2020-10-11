@@ -1,13 +1,6 @@
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
 
-// Keeping in case I want to add users in future
-
-// Create
-// exports.createGet = (req, res, next) => {
-//   res.send("user create get");
-// };
-
 // exports.createPost = (req, res, next) => {
 //   const { username, password, fullname } = req.body;
 
@@ -27,11 +20,6 @@ const jwt = require("jsonwebtoken");
 //     });
 //   });
 // };
-
-// Login
-exports.loginGet = (req, res, next) => {
-  res.send("login get");
-};
 
 exports.loginPost = (req, res) => {
   passport.authenticate("local", { session: false }, (err, user, info) => {

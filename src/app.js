@@ -1,6 +1,7 @@
 const express = require("express");
 const routes = require("./routes");
 const passport = require("passport");
+const path = require("path");
 var cors = require("cors");
 
 // config files
@@ -9,8 +10,13 @@ require("./config/passport_config");
 
 //Set up mongoose connection
 const mongoose = require("mongoose");
+const router = require("./routes/users_router");
 const mongoDB = process.env.DB_URL;
-mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(mongoDB, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+});
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
@@ -27,7 +33,8 @@ app.use(cors());
 // routes
 app.use("/users", routes.usersRouter);
 app.use("/posts", routes.postsRouter);
-app.use("/contact", routes.contactRouter);
+app.use("/comments", routes.commentsRouter);
+app.use("/contacts", routes.contactsRouter);
 
 const PORT = process.env.PORT || 5000;
 
