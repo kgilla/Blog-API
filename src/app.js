@@ -1,5 +1,5 @@
 const express = require("express");
-const routes = require("./routes/index_router");
+const routes = require("./routes");
 const passport = require("passport");
 var cors = require("cors");
 
@@ -21,11 +21,13 @@ app.use(passport.initialize());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/static", express.static(path.join(__dirname, "public")));
 app.use(cors());
 
 // routes
 app.use("/users", routes.usersRouter);
 app.use("/posts", routes.postsRouter);
+app.use("/contact", routes.contactRouter);
 
 const PORT = process.env.PORT || 5000;
 

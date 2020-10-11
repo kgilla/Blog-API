@@ -2,11 +2,6 @@ const Post = require("../models/post");
 const Comment = require("../models/comment");
 const { body, validationResult } = require("express-validator");
 
-// Create
-exports.createGet = (req, res, next) => {
-  res.send("create comment get");
-};
-
 exports.createPost = [
   body("author").trim().isLength({ min: 1, max: 30 }),
   body("content").trim().isLength({ min: 1, max: 160 }),
@@ -57,3 +52,5 @@ exports.createPost = [
     });
   },
 ];
+
+const deletePost = () => {};

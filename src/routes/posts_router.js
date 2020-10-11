@@ -4,11 +4,6 @@ const postController = require("../controllers/post_controller");
 const commentController = require("../controllers/comment_controller");
 const passport = require("passport");
 
-router.get(
-  "/create",
-  passport.authenticate("jwt", { session: false }),
-  postController.createGet
-);
 router.post(
   "/create",
   passport.authenticate("jwt", { session: false }),
@@ -41,7 +36,7 @@ router.get("/", postController.indexGet);
 router.get("/:id", postController.postViewGet);
 
 // comment routes
-router.get("/:id/comments/create", commentController.createGet);
 router.post("/:id/comments/create", commentController.createPost);
+router.post("/:id/commments/:id/delete", commentController.deletePost);
 
 module.exports = router;

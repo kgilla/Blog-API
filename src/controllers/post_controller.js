@@ -2,17 +2,13 @@ const { body, validationResult } = require("express-validator");
 const Post = require("../models/post");
 const User = require("../models/user");
 
-// Create
-exports.createGet = (req, res, next) => {
-  res.send("create post get");
-};
-
 exports.createPost = [
   body("title").isLength({ min: 1, max: 160 }),
   body("content").isLength({ min: 1 }),
+  body("blurb").isLength({ min: 1, max: 100 }),
   (req, res) => {
     const errors = validationResult(req);
-    const { title, content } = req.body;
+    const { title, content, blurb } = req.body;
 
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -21,8 +17,9 @@ exports.createPost = [
     }
 
     new Post({
-      title: title,
-      content: content,
+      title,
+      content,
+      blurb,
       author: req.user._id,
     }).save((err, post) => {
       if (err) {
@@ -44,7 +41,8 @@ exports.createPost = [
             });
           }
           return res.status(200).json({
-            post: post,
+            post,
+            message: "Post has been successfully created!",
           });
         });
       });
@@ -61,7 +59,7 @@ exports.updateGet = (req, res, next) => {
       });
     }
     return res.status(200).json({
-      post: post,
+      post,
     });
   });
 };
@@ -69,9 +67,10 @@ exports.updateGet = (req, res, next) => {
 exports.updatePost = [
   body("title").isLength({ min: 1, max: 160 }),
   body("content").isLength({ min: 1 }),
+  body("blurb").isLength({ min: 1, max: 100 }),
   (req, res, next) => {
     const errors = validationResult(req);
-    const { title, content } = req.body;
+    const { title, content, blurb } = req.body;
 
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -84,17 +83,19 @@ exports.updatePost = [
       {
         title: title,
         content: content,
+        blurb: blurb,
         updated: Date.now(),
       },
       {},
-      (err, thePost) => {
+      (err, post) => {
         if (err) {
           return res.status(400).json({
             error: err,
           });
         }
         return res.status(200).json({
-          post: thePost,
+          post,
+          message: "Post has been updated successfully",
         });
       }
     );
@@ -114,6 +115,7 @@ exports.deleteGet = (req, res) => {
     });
   });
 };
+
 exports.deletePost = (req, res, next) => {
   Post.findByIdAndDelete(req.params.id, {}, (err, post) => {
     if (err) {
@@ -122,7 +124,8 @@ exports.deletePost = (req, res, next) => {
       });
     }
     return res.status(200).json({
-      post: post,
+      post,
+      message: "Post successfully deleted",
     });
   });
 };
@@ -139,7 +142,7 @@ exports.indexGet = (req, res) => {
         });
       }
       return res.status(200).json({
-        posts: posts,
+        posts,
       });
     });
 };
@@ -155,7 +158,7 @@ exports.postViewGet = (req, res) => {
         });
       }
       return res.status(200).json({
-        post: post,
+        post,
         author: post.author,
       });
     });
