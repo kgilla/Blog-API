@@ -6,6 +6,7 @@ const postSchema = new Schema({
   content: { type: String, required: true },
   blurb: { type: String, required: true, max: 100 },
   blurbImage: { type: String },
+  blurbImageAlt: {type: String},
   comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   author: { type: Schema.Types.ObjectId, ref: "User" },
   date: { type: Date, default: Date.now() },

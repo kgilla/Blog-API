@@ -24,4 +24,8 @@ router.post(
 router.get("/", postController.indexGet);
 router.get("/:id", postController.postViewGet);
 
+router.post("/:id/publish",   
+passport.authenticate("jwt", { session: false }), 
+postController.publish)
+
 module.exports = router;

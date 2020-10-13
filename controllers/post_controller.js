@@ -8,7 +8,7 @@ exports.createPost = [
   body("blurb").isLength({ min: 1, max: 100 }),
   (req, res) => {
     const errors = validationResult(req);
-    const { title, content, blurb } = req.body;
+    const { title, content, blurb, blurbImage, blurbImageAlt } = req.body;
 
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -20,6 +20,8 @@ exports.createPost = [
       title,
       content,
       blurb,
+      blurbImage,
+      blurbImageAlt,
       author: req.user._id,
     }).save((err, post) => {
       if (err) {
@@ -56,7 +58,7 @@ exports.updatePost = [
   body("blurb").isLength({ min: 1, max: 100 }),
   (req, res, next) => {
     const errors = validationResult(req);
-    const { title, content, blurb } = req.body;
+    const { title, content, blurb, blurbImage, blurbImageAlt } = req.body;
 
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -67,9 +69,11 @@ exports.updatePost = [
     Post.findByIdAndUpdate(
       req.params.id,
       {
-        title: title,
-        content: content,
-        blurb: blurb,
+        title,
+        content,
+        blurb,
+        blurbImage,
+        blurbImageAlt,
         updated: Date.now(),
       },
       {},
@@ -119,7 +123,7 @@ exports.deletePost = (req, res, next) => {
 
 // Read
 exports.indexGet = (req, res) => {
-  Post.find({})
+  Post.find()
     .populate("author")
     .populate("comments")
     .exec((err, posts) => {
@@ -146,7 +150,27 @@ exports.postViewGet = (req, res) => {
       }
       return res.status(200).json({
         post,
-        author: post.author,
       });
     });
 };
+
+exports.publish = (req, res) => {
+  Post.findById(req.params.id).exec((err, post) => {
+    if (err) {
+      return res.status(400).json({
+        error: err,
+      })
+    }
+    post.published = post.published ? false : true;
+    Post.findByIdAndUpdate(req.params.id, post, {}, (err) => {
+      if (err) {
+        return res.status(400).json({
+          error: err,
+        })
+      }
+      return res.status(200).json({
+        message: "Post updated successfully"
+      })
+    })
+  })
+}
