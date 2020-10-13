@@ -53,9 +53,9 @@ exports.createPost = [
 ];
 
 exports.updatePost = [
-  body("title").isLength({ min: 1, max: 160 }),
+  body("title").isLength({ min: 1 }),
   body("content").isLength({ min: 1 }),
-  body("blurb").isLength({ min: 1, max: 100 }),
+  body("blurb").isLength({ min: 1 }),
   (req, res, next) => {
     const errors = validationResult(req);
     const { title, content, blurb, blurbImage, blurbImageAlt } = req.body;
