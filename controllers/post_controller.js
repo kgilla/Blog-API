@@ -3,9 +3,9 @@ const Post = require("../models/post");
 const User = require("../models/user");
 
 exports.createPost = [
-  body("title").isLength({ min: 1, max: 160 }),
+  body("title").isLength({ min: 1 }),
   body("content").isLength({ min: 1 }),
-  body("blurb").isLength({ min: 1, max: 100 }),
+  body("blurb").isLength({ min: 1 }),
   (req, res) => {
     const errors = validationResult(req);
     const { title, content, blurb, blurbImage, blurbImageAlt } = req.body;
@@ -159,18 +159,18 @@ exports.publish = (req, res) => {
     if (err) {
       return res.status(400).json({
         error: err,
-      })
+      });
     }
     post.published = post.published ? false : true;
     Post.findByIdAndUpdate(req.params.id, post, {}, (err) => {
       if (err) {
         return res.status(400).json({
           error: err,
-        })
+        });
       }
       return res.status(200).json({
-        message: "Post updated successfully"
-      })
-    })
-  })
-}
+        message: "Post updated successfully",
+      });
+    });
+  });
+};
