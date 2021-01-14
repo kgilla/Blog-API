@@ -10,7 +10,6 @@ require("./config/passport_config");
 
 //Set up mongoose connection
 const mongoose = require("mongoose");
-const router = require("./routes/users_router");
 const mongoDB = process.env.DB_URL;
 mongoose.connect(mongoDB, {
   useNewUrlParser: true,
